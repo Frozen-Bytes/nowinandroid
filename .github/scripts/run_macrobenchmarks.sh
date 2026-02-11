@@ -10,7 +10,7 @@ BENCHMARK_PKG="com.google.samples.apps.nowinandroid.benchmarks"
 TEST_RUNNER="androidx.test.runner.AndroidJUnitRunner"
 
 # trying external storage instead
-EXTERNAL_STORAGE_DIR="/sdcard/Download/benchmark_results"
+EXTERNAL_STORAGE_DIR="/data/local/tmp/benchmark_results"
 
 PATH_APK_BASELINE="${1:-}"
 PATH_APK_CANDIDATE="${2:-}"
@@ -31,7 +31,7 @@ install_apk() {
   adb shell pm clear "${BENCHMARK_PKG}" || true
 
   # trying making a transfer folder instead
-  adb shell "rm -rf ${EXTERNAL_STORAGE_DIR} && mkdir -p ${EXTERNAL_STORAGE_DIR}"
+  adb shell "rm -rf ${EXTERNAL_STORAGE_DIR} && mkdir -p ${EXTERNAL_STORAGE_DIR} && chmod 777 ${EXTERNAL_STORAGE_DIR}"
 }
 
 run_benchmark() {
