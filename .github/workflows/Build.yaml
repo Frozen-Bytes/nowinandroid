@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
         matrix:
-          runner_index: [1, 2, 3]
+          runner_index: [1, 2]
         fail-fast: false # if a runner fails the other can still go on
     timeout-minutes: 45
 
@@ -102,7 +102,7 @@ jobs:
         with:
           pattern: benchmark-results-runner-*
           path: all_results
-          merge-multiple: true # merge so no nested folders
+          # merge-multiple: true # merge so no nested folders
 
       - name: List Files (Debug)
         run: ls -R all_results
