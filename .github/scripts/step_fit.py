@@ -4,9 +4,14 @@ import math
 import sys
 from pathlib import Path
 
+# # ----------- CONFIG -----------
+# BENCHMARK_NAME = "startupPrecompiledWithBaselineProfile"
+# METRIC_KEY = "timeToInitialDisplayMs"
+# # ------------------------------
+
 # ----------- CONFIG -----------
-BENCHMARK_NAME = "startupPrecompiledWithBaselineProfile"
-METRIC_KEY = "timeToInitialDisplayMs"
+BENCHMARK_NAME = "scrollFeedCompilationBaselineProfile" 
+METRIC_KEY = "frameDurationCpuMs"
 # ------------------------------
 
 def step_fit(a, b):

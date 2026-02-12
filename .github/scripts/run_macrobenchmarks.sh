@@ -35,7 +35,7 @@ install_apk() {
 run_benchmark() {
   echo "Running benchmark..."
   adb shell am instrument -w \
-    -e class com.google.samples.apps.nowinandroid.startup.StartupBenchmark#startupPrecompiledWithBaselineProfile \
+    -e class com.google.samples.apps.nowinandroid.foryou.ScrollForYouFeedBenchmark#scrollFeedCompilationBaselineProfile \
     -e androidx.benchmark.suppressErrors EMULATOR \
     -e androidx.benchmark.profiling.mode none \
     -e no-isolated-storage true \
