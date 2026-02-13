@@ -40,9 +40,17 @@ def extract_median_from_files(paths):
         for bench in data.get("benchmarks", []):
             if bench.get("name") == BENCHMARK_NAME:
                 metrics = bench.get("metrics", {})
-                metric = metrics.get(METRIC_KEY, {})
-                medians.append(metric.get("median"))
-                found = True
+                if METRIC_KEY in metrics:
+                    medians.append(metrics[METRIC_KEY].get("median"))
+                    found = True
+                    break
+                
+                sampled_metrics = bench.get("sampledMetrics", {})
+                if METRIC_KEY in sampled_metrics:
+                    medians.append(sampled_metrics[METRIC_KEY].get("P50"))
+                    found = True
+                    break
+                    
 
         if not found:
             raise ValueError(f"Metric not found in {path}")
