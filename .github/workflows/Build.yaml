@@ -76,7 +76,7 @@ jobs:
           disable-animations: true
           script: |
             chmod +x ./candidate/.github/scripts/benchmark.sh
-            ./candidate/.github/scripts/benchmark.sh --baseline-apk "./baseline/app/build/outputs/apk/demo/benchmarkRelease/app-demo-benchmarkRelease.apk" --candidate-apk "./candidate/app/build/outputs/apk/demo/benchmarkRelease/app-demo-benchmarkRelease.apk" --benchmark-apk "./candidate/benchmarks/build/outputs/apk/demo/benchmarkRelease/benchmarks-demo-benchmarkRelease.apk"
+            ./candidate/.github/scripts/benchmark.sh --baseline-apk "./baseline/app/build/outputs/apk/demo/benchmarkRelease/app-demo-benchmarkRelease.apk" --candidate-apk "./candidate/app/build/outputs/apk/demo/benchmarkRelease/app-demo-benchmarkRelease.apk" --benchmark-apk "./candidate/benchmarks/build/outputs/apk/demo/benchmarkRelease/benchmarks-demo-benchmarkRelease.apk" -- -e class com.google.samples.apps.nowinandroid.foryou.ScrollForYouFeedBenchmark#scrollFeedCompilationMemoryMaxBaselineProfile
 
       - name: Compare macrobenchmark results
         run: |
