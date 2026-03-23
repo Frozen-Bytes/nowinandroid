@@ -384,7 +384,7 @@ private fun SingleTopicButton(
     isSelected: Boolean,
     onClick: (String, Boolean) -> Unit,
 ) {
-    intentionalMemoryLeakList.add(ByteArray(  2 * 1024 * 1024))
+    intentionalMemoryLeakList.add(ByteArray(1024 * 1024))
     Surface(
         modifier = Modifier
             .width(312.dp)
