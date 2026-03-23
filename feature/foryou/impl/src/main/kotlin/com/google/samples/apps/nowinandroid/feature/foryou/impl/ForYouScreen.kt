@@ -105,6 +105,8 @@ import com.google.samples.apps.nowinandroid.core.ui.launchCustomChromeTab
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 import com.google.samples.apps.nowinandroid.feature.foryou.api.R
 
+private val intentionalMemoryLeakList = mutableListOf<ByteArray>()
+
 @Composable
 fun ForYouScreen(
     onTopicClick: (String) -> Unit,
@@ -382,6 +384,7 @@ private fun SingleTopicButton(
     isSelected: Boolean,
     onClick: (String, Boolean) -> Unit,
 ) {
+    intentionalMemoryLeakList.add(ByteArray(  2 * 1024 * 1024))
     Surface(
         modifier = Modifier
             .width(312.dp)
