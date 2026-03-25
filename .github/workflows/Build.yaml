@@ -8,6 +8,9 @@ on:
 jobs:
   benchmark-android:
     uses: Frozen-Bytes/actions/.github/workflows/android-macrobenchmark-gradle.yml@v2
+    permissions:
+      pull-requests: write
+      contents: read
     with:
       api-level: 34
       target: google_apis
