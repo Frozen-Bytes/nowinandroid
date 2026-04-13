@@ -1,0 +1,41 @@
+name: Benchmark on Emulator
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  benchmark-android:
+    uses: Frozen-Bytes/workflows/android-macrobenchmark-gradle.yml@v3
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "pixel"
+            profile: "pixel"
+          - name: "Nexus_6"
+            profile: "Nexus 6"
+          - name: "Nexus_4"
+            profile: "Nexus 4"
+    name: ${{ matrix.name }}
+    with:
+      api-level: 34
+      target: google_apis
+      arch: x86_64
+      profile: "${{ matrix.profile }}"
+      gradle-cache-readonly: false
+      instrument-args: "-e class com.google.samples.apps.nowinandroid.startup.StartupBenchmark#startupPrecompiledWithBaselineProfile"
+      artifact-path: "benhcomp-${{ matrix.name }}"
+      artifact-macrobenchmark-name: "${{ matrix.name }}-raw-macrobenchmark"
+
+  publish-report:
+    runs-on: ubuntu-latest
+    needs: benchmark-android
+    uses: Frozen-Bytes/actions/generate-markdown-repeort@v3
+    permissions:
+      pull-requests: write
+      contents: read
+    with:
+      artifact-prefix: "benchcomp-"
+      comment-on-pr: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
