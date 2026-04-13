@@ -115,9 +115,7 @@ jobs:
                 emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot
                 disable-animations: true
                 script: |
-                  cd gelab-zero
-
-                  python apk_test_agent.py ../app/build/outputs/apk/demo/benchmarkRelease/app-demo-benchmarkRelease.apk --num_goals ${{ github.event.inputs.benchmarks-count }} --skip_execution
+                  cd gelab-zero && python apk_test_agent.py ../app/build/outputs/apk/demo/benchmarkRelease/app-demo-benchmarkRelease.apk --num_goals ${{ github.event.inputs.benchmarks-count }} --skip_execution
 
             - name: Generate github app token
               id: app-token
