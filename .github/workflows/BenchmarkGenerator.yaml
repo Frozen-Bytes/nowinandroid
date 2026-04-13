@@ -55,7 +55,12 @@ jobs:
             - name: Install latest version of Ollama
               run: |
                 curl -fsSL https://ollama.com/install.sh | sh
-            
+
+            - name: Start Ollama server
+              run: |
+                ollama serve &
+                timeout 30 bash -c 'until curl -s http://localhost:11434 > /dev/null; do sleep 1; done'
+
             - name: GELab-Zero-4B Model Install & Setup
               run: |
                 pip install huggingface_hub
