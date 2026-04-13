@@ -86,7 +86,7 @@ jobs:
 
                 # Install dependencies
                 pip install -r requirements.txt
-                pip install --upgrade openai
+                # pip install --upgrade openai
             
             - name: Install apktool
               run: |
