@@ -25,6 +25,8 @@ jobs:
       arch: x86_64
       profile: "${{ matrix.profile }}"
       gradle-cache-readonly: false
+      baseline-benchmark: "gh-action-dev"
+      candidate-benchmark: "gh-action-dev"
       instrument-args: "-e class com.google.samples.apps.nowinandroid.startup.StartupBenchmark#startupPrecompiledWithBaselineProfile"
       artifact-path: "benhcomp-${{ matrix.name }}"
       artifact-macrobenchmark-name: "${{ matrix.name }}-raw-macrobenchmark"
