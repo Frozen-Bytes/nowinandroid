@@ -86,6 +86,7 @@ jobs:
 
                 # Install dependencies
                 pip install -r requirements.txt
+                pip install --upgrade openai
 
             - name: Run AI scenario generation
               uses: reactivecircus/android-emulator-runner@v2
