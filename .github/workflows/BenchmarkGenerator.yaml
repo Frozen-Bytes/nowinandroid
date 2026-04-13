@@ -93,9 +93,9 @@ jobs:
                 # Wrapper script
                 wget -q https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool -O /tmp/apktool
                 # Latest jar from official download page
-                LATEST=$(curl -s https://bitbucket.org/iBotPeaches/apktool/downloads/ | grep -o 'apktool_[0-9.]*\.jar' | head -1)
+                LATEST_URL=$(curl -s https://api.github.com/repos/iBotPeaches/Apktool/releases/latest | grep browser_download_url | grep '\.jar' | cut -d '"' -f 4)
                 echo "Downloading latest apktool version: $LATEST"
-                wget -q "https://bitbucket.org/iBotPeaches/apktool/downloads/${LATEST}" -O /tmp/apktool.jar
+                wget -q "$LATEST_URL" -O /tmp/apktool.jar
                 sudo mv /tmp/apktool /usr/local/bin/apktool
                 sudo mv /tmp/apktool.jar /usr/local/bin/apktool.jar
                 sudo chmod +x /usr/local/bin/apktool
