@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "pixel"
+          - name: "Pixel"
             profile: "pixel"
           - name: "Nexus_6"
             profile: "Nexus 6"
@@ -30,6 +30,7 @@ jobs:
       instrument-args: "-e class com.google.samples.apps.nowinandroid.startup.StartupBenchmark#startupPrecompiledWithBaselineProfile"
       artifact-name: "benhcomp-${{ matrix.name }}.json"
       artifact-macrobenchmark-name: "${{ matrix.name }}-raw-macrobenchmark"
+      device-alias: "${{ matrix.name }}"
 
   publish-report:
     runs-on: ubuntu-latest
