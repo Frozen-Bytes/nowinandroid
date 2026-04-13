@@ -47,9 +47,58 @@ jobs:
                 chmod +x ./gradlew
                 ./gradlew :app:assembleDemoBenchmark
 
-            # AI
-            # Inputs: APK location, inputs.benchmarks-count
-            # Outputs: JSON file per generated scenario
+            - name: Setup Python
+              uses: actions/setup-python@v6
+              with:
+                python-version: '3.13'
+            
+            - name: Install latest version of Ollama
+              run: |
+                curl -fsSL https://ollama.com/install.sh | sh
+            
+            - name: GELab-Zero-4B Model Install & Setup
+              run: |
+                pip install huggingface_hub
+
+                hf download --no-force-download stepfun-ai/GELab-Zero-4B-preview --local-dir gelab-zero-4b-preview
+
+                cd gelab-zero-4b-preview
+                ollama create gelab-zero-4b-preview -f Modelfile
+
+            - name: Ensure the model was installed correctly
+              run: |
+                curl -X POST http://localhost:11434/v1/chat/completions \
+                -H "Content-Type: application/json" \
+                -d '{
+                      "model": "gelab-zero-4b-preview",
+                      "messages": [{"role": "user", "content": "Hello, GELab-Zero!"}]
+                    }'
+
+            - name: Clone gelab-zero repo fork & install requirements.txt
+              run: |
+                git clone https://github.com/Frozen-Bytes/gelab-zero
+                cd gelab-zero
+
+                # Install dependencies
+                pip install -r requirements.txt
+
+            - name: Run AI scenario generation
+              uses: reactivecircus/android-emulator-runner@v2
+              env:
+                  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+              with:
+                api-level: 34
+                target: google_apis
+                arch: x86_64
+                profile: pixel_6
+                force-avd-creation: false
+                emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot
+                disable-animations: true
+                script: |
+                  echo "Emulator ready, devices:"
+                  adb devices
+      
+                  python gelab-zero/apk_test_agent.py app/build/outputs/apk/demo/benchmarkRelease/app-demo-benchmarkRelease.apk --num_goals ${{ github.event.inputs.benchmarks-count }} --skip_execution
 
             - name: Generate github app token
               id: app-token
