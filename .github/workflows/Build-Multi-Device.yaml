@@ -40,8 +40,16 @@ jobs:
       contents: read
 
     steps:
+      - name: Create Bot Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
       - name: Publish Report
         uses: Frozen-Bytes/actions/publish-report@v3
         with:
+          github-token: ${{ steps.app-token.outputs.token  }}
           artifact-prefix: "benchcomp-"
           comment-on-pr: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
