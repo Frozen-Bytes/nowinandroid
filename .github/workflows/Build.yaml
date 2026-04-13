@@ -1,13 +1,13 @@
 name: Benchmark on Emulator
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  # pull_request:
+  #   types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
   benchmark-android:
-    uses: Frozen-Bytes/actions/workflows/android-macrobenchmark-gradle.yml@v3
+    uses: Frozen-Bytes/actions/.github/workflows/android-macrobenchmark-gradle.yml@v3
     permissions:
       pull-requests: write
       contents: read
