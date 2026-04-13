@@ -87,6 +87,20 @@ jobs:
                 # Install dependencies
                 pip install -r requirements.txt
                 pip install --upgrade openai
+            
+            - name: Install apktool
+              run: |
+                # Wrapper script
+                wget -q https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool -O /tmp/apktool
+                # Latest jar from official download page
+                LATEST=$(curl -s https://bitbucket.org/iBotPeaches/apktool/downloads/ | grep -o 'apktool_[0-9.]*\.jar' | head -1)
+                echo "Downloading latest apktool version: $LATEST"
+                wget -q "https://bitbucket.org/iBotPeaches/apktool/downloads/${LATEST}" -O /tmp/apktool.jar
+                sudo mv /tmp/apktool /usr/local/bin/apktool
+                sudo mv /tmp/apktool.jar /usr/local/bin/apktool.jar
+                sudo chmod +x /usr/local/bin/apktool
+                sudo chmod +x /usr/local/bin/apktool.jar
+                apktool --version
 
             - name: Run AI scenario generation
               uses: reactivecircus/android-emulator-runner@v2
@@ -101,9 +115,6 @@ jobs:
                 emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot
                 disable-animations: true
                 script: |
-                  echo "Emulator ready, devices:"
-                  adb devices
-      
                   python gelab-zero/apk_test_agent.py app/build/outputs/apk/demo/benchmarkRelease/app-demo-benchmarkRelease.apk --num_goals ${{ github.event.inputs.benchmarks-count }} --skip_execution
 
             - name: Generate github app token
