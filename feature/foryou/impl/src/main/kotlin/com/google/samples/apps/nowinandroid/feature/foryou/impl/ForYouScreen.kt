@@ -17,6 +17,7 @@
 package com.google.samples.apps.nowinandroid.feature.foryou.impl
 
 import android.net.Uri
+import android.util.Log
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.activity.compose.ReportDrawnWhen
@@ -105,7 +106,11 @@ import com.google.samples.apps.nowinandroid.core.ui.launchCustomChromeTab
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 import com.google.samples.apps.nowinandroid.feature.foryou.api.R
 
-private val intentionalMemoryLeakList = mutableListOf<ByteArray>()
+private val intentionalMemoryLeakList = mutableListOf<ByteArray>().apply {
+    for (i in 1..70) {
+        add(ByteArray(1024 * 1024).apply { fill(1) })
+    }
+}
 
 @Composable
 fun ForYouScreen(
@@ -267,7 +272,7 @@ private fun LazyStaggeredGridScope.onboarding(
         OnboardingUiState.Loading,
         OnboardingUiState.LoadFailed,
         OnboardingUiState.NotShown,
-        -> Unit
+            -> Unit
 
         is OnboardingUiState.Shown -> {
             item(span = StaggeredGridItemSpan.FullLine, contentType = "onboarding") {
@@ -385,10 +390,7 @@ private fun SingleTopicButton(
     onClick: (String, Boolean) -> Unit,
 ) {
 
-    val leak = ByteArray(1024 * 1024)
-    leak.fill(1)
-    intentionalMemoryLeakList.add(leak)
-
+    Log.d("MemoryLeakTest", "Leak size is: ${intentionalMemoryLeakList.size} MB")
     Surface(
         modifier = Modifier
             .width(312.dp)
@@ -501,7 +503,7 @@ private fun feedItemsSize(
         OnboardingUiState.Loading,
         OnboardingUiState.LoadFailed,
         OnboardingUiState.NotShown,
-        -> 0
+            -> 0
 
         is OnboardingUiState.Shown -> 1
     }
