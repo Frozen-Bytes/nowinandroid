@@ -117,56 +117,60 @@ jobs:
                 disable-animations: true
                 script: |
                   cd gelab-zero && python apk_test_agent.py ../app/build/outputs/apk/demo/debug/app-demo-debug.apk --num_goals ${{ github.event.inputs.benchmarks-count }}
-
-            # - name: Generate github app token
-            #   id: app-token
-            #   uses: actions/create-github-app-token@v3
-            #   with:
-            #     client-id: ${{ vars.GH_APP_CLIENT_ID }}
-            #     private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
             
-            # - name: Create pull request branch
-            #   id: create-branch
-            #   run: |
-            #     BRANCH_NAME="macrobenchmark/generated-$(date +'%Y%m%d-%H%M%S')-${{ github.run_id }}"
-            #     git checkout -b "$BRANCH_NAME"
-            #     echo "branch-name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+            - name: Upload gelab-zero log as artifact
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: gelab-zero-running-log-${{ github.run_id }}
+                path: gelab-zero/running_log/
 
-            # actions-to-macrobenchmark script
-            # Inputs: JSON files location, path to store the benchmarks that will be generated
-            # Outputs: startup benchmark, frame rendering/memory benchmarks per JSON file
+            - name: Generate github app token
+              id: app-token
+              uses: actions/create-github-app-token@v3
+              with:
+                client-id: ${{ vars.GH_APP_CLIENT_ID }}
+                private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
             
-            # - name: Add dummy change for testing
-            #   run: |
-            #     mkdir -p benchmarks
-            #     echo "Benchmark run: $(date) | Run ID: ${{ github.run_id }}" >> benchmarks/test-run.log
+            - name: Create pull request branch
+              id: create-branch
+              run: |
+                SHORT_SHA=$(git rev-parse --short HEAD)
+                BRANCH_NAME="macrobenchmark/$SHORT_SHA"
+                git checkout -b "$BRANCH_NAME"
+                echo "branch-name=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
-            # - name: Commit generated benchmarks
-            #   run: |
-            #     git config user.name "${{ vars.GH_APP_NAME }}[bot]"
-            #     git config user.email "${{ vars.GH_APP_NAME }}[bot]@users.noreply.github.com"
-            #     git add benchmarks/  # adjust this path to where the benchmarks are written
-            #     git commit -m "chore: add generated macrobenchmarks
+            - name: Convert JSON actions to macrobenchmark files
+              run: |
+                git clone https://github.com/Frozen-Bytes/actions-to-macrobenchmark.git
+                python -u actions-to-macrobenchmark/bench_generator.py
+
+            - name: Commit generated benchmarks
+              run: |
+                git config user.name "${{ vars.GH_APP_NAME }}[bot]"
+                git config user.email "${{ vars.GH_APP_NAME }}[bot]@users.noreply.github.com"
+                git add benchmarks/
+                git commit -m "test(perf): add generated macrobenchmarks
         
-            #     Generated ${{ inputs.benchmarks-count }} macrobenchmark(s)
-            #     Triggered by: @${{ github.actor }}
-            #     Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" || echo "No changes to commit"
+                Generated ${{ inputs.benchmarks-count }} macrobenchmark(s)
+                Triggered by: @${{ github.actor }}
+                Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" || echo "No changes to commit"
             
-            # - name: Push benchmark branch
-            #   run: |
-            #     git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}
-            #     git push origin "${{ steps.create-branch.outputs.branch-name }}"
+            - name: Push benchmark branch
+              run: |
+                git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}
+                git push origin "${{ steps.create-branch.outputs.branch-name }}"
             
-            # - name: Open Pull Request
-            #   env:
-            #     GH_TOKEN: ${{ steps.app-token.outputs.token }}
-            #   run: |
-            #     gh pr create \
-            #     --title "chore: generated ${{ inputs.benchmarks-count }} macrobenchmarks" \
-            #     --body "## 🤖 Macrobenchmark Generation
+            - name: Open Pull Request
+              env:
+                GH_TOKEN: ${{ steps.app-token.outputs.token }}
+              run: |
+                gh pr create \
+                --title "Generated ${{ inputs.benchmarks-count }} macrobenchmarks" \
+                --body "## 🤖 Macrobenchmark Generation
 
-            #     This PR was automatically generated by the Macrobenchmark Generator workflow.
+                This PR was automatically generated by the Macrobenchmark Generator workflow.
 
-            #     **Triggered by:** @${{ github.actor }}
-            #     **Benchmarks generated:** ${{ inputs.benchmarks-count }}" \
-            #     --head "${{ steps.create-branch.outputs.branch-name }}"
+                **Triggered by:** @${{ github.actor }}
+                **Benchmarks generated:** ${{ inputs.benchmarks-count }}" \
+                --head "${{ steps.create-branch.outputs.branch-name }}"
