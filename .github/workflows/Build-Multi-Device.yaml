@@ -16,8 +16,6 @@ jobs:
             profile: "pixel"
           - name: "Nexus_6"
             profile: "Nexus 6"
-          - name: "Nexus_4"
-            profile: "Nexus 4"
     name: ${{ matrix.name }}
     with:
       api-level: 34
@@ -28,7 +26,7 @@ jobs:
       baseline-branch: "gh-action-dev"
       candidate-branch: "gh-action-dev"
       instrument-args: "-e class com.google.samples.apps.nowinandroid.startup.StartupBenchmark#startupPrecompiledWithBaselineProfile"
-      artifact-name: "benhcomp-${{ matrix.name }}.json"
+      artifact-name: "benchcomp-${{ matrix.name }}.json"
       artifact-macrobenchmark-name: "${{ matrix.name }}-raw-macrobenchmark"
       device-alias: "${{ matrix.name }}"
 
