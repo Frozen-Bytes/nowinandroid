@@ -52,8 +52,7 @@ jobs:
           UPLOAD_RESPONSE=$(curl -s \
             -X POST \
             -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Content-Type: video/mp4" \
-            --data-binary @test-video.mp4 \
+            -F "file=@test-video.mp4;type=video/mp4" \
             "https://uploads.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/assets?name=test-video.mp4")
 
           echo "Upload response: $UPLOAD_RESPONSE"
