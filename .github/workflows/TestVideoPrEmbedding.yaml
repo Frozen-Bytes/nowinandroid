@@ -89,12 +89,12 @@ jobs:
             --title "Test: Video embedding in PR" \
             --body "## 🎥 Video Embedding Test
 
-This PR verifies that MP4 videos render correctly inside PR descriptions.
+            This PR verifies that MP4 videos render correctly inside PR descriptions.
 
-### Expected:
-- Videos should be playable inline (no clicking required)
-
-### Videos:
-${{ steps.collect-videos.outputs.video-embeds }}
-" \
+            ### Expected:
+            - Videos should be playable inline (no clicking required)
+            
+            ### Videos:
+            ${{ steps.collect-videos.outputs.video-embeds }}
+            " \
             --head "${{ steps.create-branch.outputs.branch-name }}"
