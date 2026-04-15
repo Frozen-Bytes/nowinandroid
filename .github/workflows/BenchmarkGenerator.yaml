@@ -124,6 +124,12 @@ jobs:
               with:
                 name: gelab-zero-running-log-${{ github.run_id }}
                 path: gelab-zero/running_log/
+            
+            - name: Install ai-action-to-mp4 and run it
+              shell: bash
+              run: |
+                pip install git+https://github.com/Frozen-Bytes/ai-action-to-mp4.git@main
+                ai-action-to-mp4 --jsons gelab-zero/running_log/action_logs/ --imgs gelab-zero/running_log/server_log/os-copilot-local-eval-logs/images/ --out ./benchmarks/src/main/kotlin/com/google/samples/apps/nowinandroid/Generator
 
             - name: Generate github app token
               id: app-token
@@ -165,6 +171,24 @@ jobs:
               id: compute-total
               run: echo "total=$(( 1 + 2 * ${{ inputs.benchmarks-count }} ))" >> $GITHUB_OUTPUT
 
+            - name: Collect generated video links
+              id: collect-videos
+              shell: bash
+              run: |
+                VIDEO_DIR="./benchmarks/src/main/kotlin/com/google/samples/apps/nowinandroid/Generator"
+                VIDEO_LINKS=""
+                while IFS= read -r -d '' file; do
+                  REL_PATH="https://raw.githubusercontent.com/${{ github.repository }}/${{ steps.create-branch.outputs.branch-name }}/${file#./}"
+                  NAME=$(basename "$file")
+                  VIDEO_LINKS="${VIDEO_LINKS}"$'\n'"* [${NAME}](${REL_PATH})"
+                done < <(find "$VIDEO_DIR" -name "*.mp4" -print0 | sort -z)
+
+                {
+                  echo "video-links<<EOF"
+                  echo "$VIDEO_LINKS"
+                  echo "EOF"
+                } >> "$GITHUB_OUTPUT"
+
             - name: Open Pull Request
               env:
                 GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -177,5 +201,8 @@ jobs:
                 **Benchmarks generated:** ${{ steps.compute-total.outputs.total }}
                 - 1 startup benchmark
                 - ${{ inputs.benchmarks-count }} frametime benchmark(s) (one per user scenario)
-                - ${{ inputs.benchmarks-count }} memory benchmark(s) (one per user scenario)" \
+                - ${{ inputs.benchmarks-count }} memory benchmark(s) (one per user scenario)
+
+                **🎥 Generated User Scenarios:**
+                ${{ steps.collect-videos.outputs.video-links }}" \
                 --head "${{ steps.create-branch.outputs.branch-name }}"
