@@ -66,7 +66,7 @@ jobs:
             -X POST \
             -H "Authorization: Bearer $GH_TOKEN" \
             -F "file=@test-video.mp4;type=video/mp4" \
-            "$UPLOAD_URL"))
+            "$UPLOAD_URL")
 
           echo "Upload response: $UPLOAD_RESPONSE"
 
