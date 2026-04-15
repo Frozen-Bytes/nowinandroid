@@ -1,0 +1,68 @@
+name: Test Video PR Upload
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-video-upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate github app token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Download test video
+        run: |
+          curl -L -o test-video.mp4 "https://www.w3schools.com/html/mov_bbb.mp4"
+
+      - name: Create temp branch
+        run: |
+          git config user.name "${{ vars.GH_APP_NAME }}[bot]"
+          git config user.email "${{ vars.GH_APP_NAME }}[bot]@users.noreply.github.com"
+          BRANCH="test-video-upload-$(date +%s)"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+          git checkout -b "$BRANCH"
+          echo "timestamp=$(date)" > test-marker.txt
+          git add test-marker.txt
+          git commit -m "test: video upload"
+          git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}
+          git push origin "$BRANCH"
+
+      - name: Create PR and upload video
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          PR_URL=$(gh pr create \
+            --title "Test: Video Upload" \
+            --body "Uploading video..." \
+            --head "$BRANCH")
+
+          PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+
+          UPLOAD_RESPONSE=$(curl -s \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Content-Type: video/mp4" \
+            --data-binary @test-video.mp4 \
+            "https://uploads.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/assets?name=test-video.mp4")
+
+          echo "Upload response: $UPLOAD_RESPONSE"
+
+          VIDEO_URL=$(echo "$UPLOAD_RESPONSE" | jq -r '.url')
+          echo "Video URL: $VIDEO_URL"
+
+          gh pr edit "$PR_NUMBER" --body "## Test Video Upload
+
+          If the video appears inline below, the approach is confirmed working ✅
+
+          ${VIDEO_URL}"
