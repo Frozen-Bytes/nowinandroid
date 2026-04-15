@@ -24,6 +24,8 @@ jobs:
       - name: Download test video
         run: |
           curl -L -o test-video.mp4 "https://www.w3schools.com/html/mov_bbb.mp4"
+          ls -lh test-video.mp4
+          file test-video.mp4
 
       - name: Create temp branch
         run: |
@@ -49,11 +51,22 @@ jobs:
 
           PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
 
+          echo "PR Number: $PR_NUMBER"
+          echo "PR URL: $PR_URL"
+
+          echo "--- Video file info ---"
+          ls -lh test-video.mp4
+          file test-video.mp4
+          echo "--- End file info ---"
+
+          UPLOAD_URL="https://uploads.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/assets?name=test-video.mp4"
+          echo "Uploading to: $UPLOAD_URL"
+          
           UPLOAD_RESPONSE=$(curl -s \
             -X POST \
             -H "Authorization: Bearer $GH_TOKEN" \
             -F "file=@test-video.mp4;type=video/mp4" \
-            "https://uploads.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/assets?name=test-video.mp4")
+            "$UPLOAD_URL"))
 
           echo "Upload response: $UPLOAD_RESPONSE"
 
