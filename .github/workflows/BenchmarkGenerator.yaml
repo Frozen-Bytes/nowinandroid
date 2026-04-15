@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
         inputs:
             benchmarks-count:
-                description: 'Number of macrobenchmarks you would like to generate'
+                description: 'Number of user scenarios you would like to generate'
                 required: true
                 default: 1
                 type: number
