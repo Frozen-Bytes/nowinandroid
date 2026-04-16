@@ -1,4 +1,4 @@
-name: Benchmark on Emulator Multi-Device
+name: Performance Check
 
 on:
   pull_request:
