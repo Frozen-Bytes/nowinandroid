@@ -172,6 +172,13 @@ internal fun ForYouScreen(
                 .testTag("forYou:feed"),
             state = state,
         ) {
+            // Note: Creates form empty items, each with 25ms of work (forced regression)
+            // This does not necessarily mean that each frame will have an increase of 100ms.
+            // The overhead occurs only when these items are created and rendered
+            repeat(4) {
+                item { Thread.sleep(25) }
+            }
+
             onboarding(
                 onboardingUiState = onboardingUiState,
                 onTopicCheckedChanged = onTopicCheckedChanged,
