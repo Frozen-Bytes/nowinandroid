@@ -6,7 +6,6 @@ import androidx.benchmark.macro.ExperimentalMetricApi
 import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.MemoryUsageMetric
 import androidx.benchmark.macro.StartupMode
-import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
@@ -17,20 +16,20 @@ import org.junit.runner.RunWith
 
 @OptIn(ExperimentalMetricApi::class)
 @RunWith(AndroidJUnit4::class)
-class BookmarkForYouArticle_MU {
+class BookmarkForYouArticle_Bench {
     @get:Rule
     val benchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun measure() = benchmarkRule.measureRepeated(
+    fun bookmarkForYouArticle() = benchmarkRule.measureRepeated(
         packageName = "com.google.samples.apps.nowinandroid.demo",
-        metrics = listOf(MemoryUsageMetric(MemoryUsageMetric.Mode.Max)),
+        metrics = listOf(MemoryUsageMetric(MemoryUsageMetric.Mode.Max), FrameTimingMetric()),
         startupMode = StartupMode.WARM,
         compilationMode = CompilationMode.Partial(
             baselineProfileMode = BaselineProfileMode.Disable,
-            warmupIterations = 3,
+            warmupIterations = 1,
         ),
-        iterations = 10,
+        iterations = 5,
         setupBlock = {
             pressHome()
             startActivityAndWait()

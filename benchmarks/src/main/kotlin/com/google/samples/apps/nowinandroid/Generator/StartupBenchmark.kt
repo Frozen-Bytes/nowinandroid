@@ -21,7 +21,7 @@ class GeneratedStartupBenchmark {
     val benchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun measure() = benchmarkRule.measureRepeated(
+    fun startupTime() = benchmarkRule.measureRepeated(
         packageName = "com.google.samples.apps.nowinandroid.demo",
         metrics = listOf(StartupTimingMetric()),
         startupMode = StartupMode.COLD,
