@@ -29,7 +29,7 @@ class BookmarkForYouArticle_Bench {
             baselineProfileMode = BaselineProfileMode.Disable,
             warmupIterations = 1,
         ),
-        iterations = 5,
+        iterations = 10,
         setupBlock = {
             pressHome()
             startActivityAndWait()
