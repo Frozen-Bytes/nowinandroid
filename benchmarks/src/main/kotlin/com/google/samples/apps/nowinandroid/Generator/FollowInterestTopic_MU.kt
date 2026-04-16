@@ -22,7 +22,7 @@ class FollowInterestTopic_MU {
     val benchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun measure() = benchmarkRule.measureRepeated(
+    fun followInterestTopicMEM() = benchmarkRule.measureRepeated(
         packageName = "com.google.samples.apps.nowinandroid.demo",
         metrics = listOf(MemoryUsageMetric(MemoryUsageMetric.Mode.Max)),
         startupMode = StartupMode.WARM,

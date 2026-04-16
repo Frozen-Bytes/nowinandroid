@@ -22,7 +22,7 @@ class BookmarkForYouArticle_FT {
     val benchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun measure() = benchmarkRule.measureRepeated(
+    fun bookmarkForYouArticleFT() = benchmarkRule.measureRepeated(
         packageName = "com.google.samples.apps.nowinandroid.demo",
         metrics = listOf(FrameTimingMetric()),
         startupMode = StartupMode.WARM,

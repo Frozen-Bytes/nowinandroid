@@ -22,7 +22,7 @@ class FollowInterestTopic_FT {
     val benchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun measure() = benchmarkRule.measureRepeated(
+    fun followInterestTopicFT() = benchmarkRule.measureRepeated(
         packageName = "com.google.samples.apps.nowinandroid.demo",
         metrics = listOf(FrameTimingMetric()),
         startupMode = StartupMode.WARM,
